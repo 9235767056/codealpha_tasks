@@ -1,3 +1,10 @@
+#Goal: Buld a simple stock tracker that circulates total investment based on manually defined stock
+# prices Simplified Scope:
+# User inputs stock namas and quantity
+# Use a hardcoded dictionary to define stock prices (eg. (AAPL 188, TSLA 250)
+# Diaplay total investment value and optionally save the result in a tutor.cove.
+# Key Concepts Used: dictionary, input/output, hasic arithmetic, file handlin (optional).
+
 import csv
 
 def stock_tracker():
