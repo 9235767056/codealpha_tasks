@@ -1,92 +1,52 @@
-import csv
+import random
 
-def stock_tracker():
+def hangman():
     """
-    A simple stock tracker that calculates total investment based on manually defined stock prices.
+    Plays a simple text-based Hangman game.
     """
-    # Hardcoded dictionary for stock prices
-    stock_prices = {
-        "AAPL": 180.00,
-        "TSLA": 250.00,
-        "GOOGL": 150.00,
-        "MSFT": 400.00,
-        "AMZN": 190.00
-    }
+    words = ["python", "hangman", "programming", "computer", "developer"]
+    chosen_word = random.choice(words).lower()
+    word_display = ["_" for _ in chosen_word]
+    guessed_letters = []
+    incorrect_guesses = 0
+    max_incorrect_guesses = 6
 
-    portfolio = {}
-    total_investment_value = 0.0
+    print("Welcome to Hangman!")
+    print("Guess the word, one letter at a time.")
+    print(f"The word has {len(chosen_word)} letters.")
 
-    print("Welcome to the Simple Stock Tracker!")
-    print("Available stocks and their prices:")
-    for ticker, price in stock_prices.items():
-        print(f"  {ticker}: ${price:.2f}")
+    while incorrect_guesses < max_incorrect_guesses and "_" in word_display:
+        print("\n" + " ".join(word_display))
+        print(f"Guessed letters: {', '.join(sorted(guessed_letters))}")
+        print(f"Incorrect guesses left: {max_incorrect_guesses - incorrect_guesses}")
 
-    while True:
-        stock_name = input("\nEnter stock ticker (e.g., AAPL) or 'done' to finish: ").upper()
-        if stock_name == 'DONE':
-            break
+        guess = input("Guess a letter: ").lower()
 
-        if stock_name not in stock_prices:
-            print("Invalid stock ticker. Please choose from the available stocks.")
+        if len(guess) != 1 or not guess.isalpha():
+            print("Invalid input. Please enter a single letter.")
             continue
 
-        while True:
-            try:
-                quantity = int(input(f"Enter quantity for {stock_name}: "))
-                if quantity <= 0:
-                    print("Quantity must be a positive number.")
-                else:
-                    break
-            except ValueError:
-                print("Invalid quantity. Please enter a whole number.")
+        if guess in guessed_letters:
+            print("You already guessed that letter. Try again.")
+            continue
 
-        portfolio[stock_name] = portfolio.get(stock_name, 0) + quantity
-        print(f"Added {quantity} shares of {stock_name} to your portfolio.")
+        guessed_letters.append(guess)
 
-    print("\n--- Your Investment Summary ---")
-    if not portfolio:
-        print("Your portfolio is empty.")
-    else:
-        for stock, quantity in portfolio.items():
-            price = stock_prices[stock]
-            value = price * quantity
-            total_investment_value += value
-            print(f"{stock}: {quantity} shares @ ${price:.2f} = ${value:.2f}")
-
-        print(f"\nTotal Investment Value: ${total_investment_value:.2f}")
-
-    # Optional: Save the result to a file
-    save_option = input("\nDo you want to save this summary to a file? (yes/no): ").lower()
-    if save_option == 'yes':
-        file_type = input("Save as (txt/csv)? ").lower()
-        if file_type == 'txt':
-            file_name = "investment_summary.txt"
-            with open(file_name, 'w') as f:
-                f.write("--- Your Investment Summary ---\n")
-                if not portfolio:
-                    f.write("Your portfolio is empty.\n")
-                else:
-                    for stock, quantity in portfolio.items():
-                        price = stock_prices[stock]
-                        value = price * quantity
-                        f.write(f"{stock}: {quantity} shares @ ${price:.2f} = ${value:.2f}\n")
-                    f.write(f"\nTotal Investment Value: ${total_investment_value:.2f}\n")
-            print(f"Summary saved to {file_name}")
-        elif file_type == 'csv':
-            file_name = "investment_summary.csv"
-            with open(file_name, 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(["Stock", "Quantity", "Price per Share", "Total Value"])
-                if portfolio:
-                    for stock, quantity in portfolio.items():
-                        price = stock_prices[stock]
-                        value = price * quantity
-                        writer.writerow([stock, quantity, f"{price:.2f}", f"{value:.2f}"])
-                writer.writerow([]) # Blank row for separation
-                writer.writerow(["Total Investment Value", "", "", f"{total_investment_value:.2f}"])
-            print(f"Summary saved to {file_name}")
+        if guess in chosen_word:
+            print(f"Good guess! '{guess}' is in the word.")
+            for i in range(len(chosen_word)):
+                if chosen_word[i] == guess:
+                    word_display[i] = guess
         else:
-            print("Invalid file type. Summary not saved.")
+            print(f"Sorry, '{guess}' is not in the word.")
+            incorrect_guesses += 1
+
+    if "_" not in word_display:
+        print("\n" + " ".join(word_display))
+        print(f"\nCongratulations! You guessed the word: '{chosen_word}'")
+    else:
+        print("\n" + " ".join(word_display))
+        print(f"\nGame over! You ran out of guesses. The word was: '{chosen_word}'")
 
 if __name__ == "__main__":
-    stock_tracker()
+    hangman()
